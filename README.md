@@ -1,6 +1,6 @@
-# BloodSync - Blood Bank Management System
+# HemaLink - Blood Bank Management System
 
-BloodSync is a comprehensive web application that connects blood donors with recipients. It provides real-time donor matching, blood inventory management, and request tracking.
+HemaLink is a comprehensive web application that connects blood donors with recipients. It provides real-time donor matching, blood inventory management, and request tracking.
 
 ## Features
 
@@ -47,12 +47,12 @@ The system uses a sophisticated matching algorithm that considers:
 3. **IMPORTANT**: Check "Add Python to PATH" during installation
 4. Click "Install Now"
 
-### Step 2: Extract BloodSync
-1. Extract the `bloodsync.zip` file to a folder (e.g., `C:\BloodSync`)
+### Step 2: Extract HemaLink
+1. Extract the `hemalink.zip` file to a folder (e.g., `C:\HemaLink`) 
 2. Open Command Prompt (CMD) or PowerShell
-3. Navigate to the BloodSync folder:
+3. Navigate to the HemaLink folder:
    ```
-   cd C:\BloodSync
+   cd C:\HemaLink
    ```
 
 ### Step 3: Create Virtual Environment (Recommended)
@@ -77,7 +77,7 @@ python app.py
 ### Step 6: Access the Website
 1. Open your web browser
 2. Go to: `http://localhost:5000`
-3. BloodSync is now running!
+3. HemaLink is now running!
 
 ## Sample Login Credentials
 
@@ -92,7 +92,7 @@ python app.py
 ## Project Structure
 
 ```
-bloodsync/
+hemalink/
 ├── app.py                 # Main Flask application
 ├── requirements.txt       # Python dependencies
 ├── README.md             # This file
@@ -259,7 +259,7 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 
 ## Emergency Contacts
 
-- **BloodSync Helpline**: 1800-BLOOD-HELP
+- **HemaLink Helpline**: 1800-BLOOD-HELP
 - **National Blood Bank**: 1910
 - **Emergency Services**: 108
 
@@ -270,9 +270,9 @@ This project is created for educational purposes.
 ## Support
 
 For any issues or questions, please contact:
-- Email: help@bloodsync.org
+- Email: help@hemalink.org
 - Phone: 1800-BLOOD-HELP
 
 ---
 
-**BloodSync - Saving Lives, One Drop at a Time** ❤️
+**HemaLink - Saving Lives, One Drop at a Time** ❤️

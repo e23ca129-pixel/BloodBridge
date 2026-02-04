@@ -6,7 +6,7 @@ import boto3
 from botocore.exceptions import ClientError, NoCredentialsError
 
 app = Flask(__name__)
-app.secret_key = os.getenv('BLOODSYNC_SECRET', 'bloodsync-secret-key-2024')
+app.secret_key = os.getenv('HEMALINK_SECRET', 'hemalink-secret-key-2026')
 
 # AWS config via env vars with sane defaults
 AWS_REGION = os.getenv('AWS_REGION', 'us-east-1')

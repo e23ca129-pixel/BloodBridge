@@ -1,11 +1,26 @@
-/* BloodSync - Main Stylesheet */
+/* HemaLink - Main Stylesheet */
+
+:root {
+    --brand: #6f42c1; /* primary purple */
+    --brand-dark: #5a2db0;
+    --brand-light: #f3ecff; /* very light lavender */
+    --accent: #9b5cff; /* secondary accent */
+    --muted-bg: #ffffff; /* white background */
+    --pink: #6f42c1; /* purple alias kept for compatibility */
+    --pink-dark: #5a2db0;
+    --pink-light: #f3ecff;
+    --text-color: #222;
+    --text-inverse: #ffffff;
+} 
+
 
 /* General Styles */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f8f9fa;
+    background-color: var(--muted-bg);
     padding-top: 56px;
-}
+    color: var(--text-color);
+}  
 
 /* Navbar Styles */
 .navbar {
@@ -17,14 +32,218 @@ body {
     font-weight: bold;
 }
 
+/* Ensure navbar brand and links are white by default for better contrast */
+.navbar .nav-link, .navbar-brand, .navbar .navbar-toggler-icon {
+    color: #ffffff !important;
+}
+.navbar .nav-link:hover {
+    color: rgba(255,255,255,0.9) !important;
+}
+
 /* Hero Section */
 .hero-section {
-    background: linear-gradient(135deg, #fff5f5 0%, #ffffff 100%);
-    padding: 80px 0;
-    min-height: 500px;
+    position: relative;
+    /* overlay gradient only - page background handles the hero image */
+    background: linear-gradient(135deg, rgba(111,66,193,0.55) 0%, rgba(255,255,255,0.0) 60%);
+    padding: 100px 0;
+    min-height: 60vh;
     display: flex;
     align-items: center;
+    color: var(--text-inverse);
+    overflow: hidden;
 }
+.hero-section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    /* subtle dark overlay to improve contrast against page background */
+    background: rgba(19, 2, 30, 0.35);
+    z-index: -1; /* place behind content so it doesn't block clicks */
+}
+.hero-section .container {
+    position: relative;
+    z-index: 2; /* ensure content (buttons) is above overlays */
+}
+.hero-content {
+    max-width: 620px;
+    margin: 0 auto;
+}
+.hero-section h1 {
+    color: var(--text-inverse);
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    line-height: 1.04;
+    margin-bottom: 0.8rem;
+}
+.hero-section p.lead {
+    color: rgba(255,255,255,0.95);
+    font-size: 1.05rem;
+    margin-bottom: 1.25rem;
+}
+.hero-cta {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+.hero-cta .btn { min-width: 160px; }
+
+/* Align hero content to left on large screens */
+@media (min-width: 992px) {
+    .hero-section .row { align-items: center; }
+    .hero-section .col-lg-6:first-child { display: flex; align-items: center; }
+    .hero-content { margin: 0; }
+}
+
+/* Stat card centering */
+.stat-card {
+    padding: 30px 20px;
+    border-radius: 10px;
+    background: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+..stat-card i { color: var(--brand); }
+
+/* Buttons: ensure contrast on front page (purple on white) */
+.front-bg .btn-danger {
+    background-color: var(--brand);
+    border-color: var(--brand);
+    color: #fff;
+}
+
+/* Ensure Recent Requests text is black for readability */
+.recent-requests h2,
+.recent-requests .card .card-title,
+.recent-requests .card .card-text,
+.recent-requests .card .card-footer,
+.recent-requests .request-card,
+.front-bg .recent-requests .card {
+    color: #000 !important;
+}
+
+/* Make sure badge text remains readable */
+.recent-requests .card-header.bg-danger,
+.recent-requests .card-header.bg-warning {
+    color: #fff !important;
+}
+
+/* Make the 'View Details' button black text/border in Recent Requests */
+.recent-requests .card .card-footer .btn,
+.recent-requests .btn-outline-danger {
+    color: #000 !important;
+    border-color: #000 !important;
+    background-color: transparent !important;
+}
+.recent-requests .btn-outline-danger:hover {
+    background-color: rgba(0,0,0,0.06) !important;
+    color: #000 !important;
+}
+
+.front-bg .btn-outline-danger {
+    color: var(--brand);
+    border-color: var(--brand);
+}
+.front-bg .btn-danger:hover { background-color: var(--brand-dark); border-color: var(--brand-dark); }
+.front-bg .btn-outline-danger:hover { background-color: rgba(111,66,193,0.06); }
+
+/* Ensure hero text looks good on white background */
+.front-bg .hero-section h1, .front-bg .hero-section p { color: var(--text-color); }
+.front-bg .brand-highlight { color: var(--brand); }
+
+
+/* Feature card icon color on non-front pages */
+.features-section .feature-card i { color: var(--brand); }
+
+
+/* Front page background and text colors (white page with themed accents) */
+.front-bg {
+    background-color: var(--muted-bg); /* plain white page */
+    color: var(--text-color);
+}
+/* Make the header/brand and nav links white on front page */
+.front-bg a, .front-bg .nav-link, .front-bg .navbar-brand {
+    color: #ffffff !important;
+}
+.front-bg .text-muted {
+    color: rgba(34,34,34,0.6) !important;
+}  
+.front-bg .card {
+    background-color: rgba(255,255,255,0.05);
+    color: var(--text-inverse);
+    border: none;
+}
+.front-bg .card .card-header {
+    background-color: rgba(255,255,255,0.06);
+}
+
+/* Hero section overlay and right-side image box */
+.front-bg .hero-section {
+    background: linear-gradient(135deg, rgba(111,66,193,0.08) 0%, rgba(255,255,255,0.0) 60%);
+    color: var(--text-color);
+}
+
+/* Small decorative image box on the right for large screens */
+.front-bg .hero-visual {
+    display: block;
+    background: url('/static/images/hemabg.jpg') center/cover no-repeat;
+    width: 360px;
+    height: 420px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    overflow: hidden;
+    margin-left: 1.5rem;
+}
+.front-bg .hero-visual::before { content: ""; position: absolute; inset:0; background: linear-gradient(180deg, rgba(111,66,193,0.10), rgba(0,0,0,0.06)); z-index: -1; }
+
+/* Hide the small box on small screens (we show full-width version below text there) */
+@media (max-width: 991.98px) {
+    .front-bg .hero-visual { display: block; width: 100%; height: 300px; margin-left: 0; border-radius: 10px; }
+    .front-bg .hero-section { background-size: 100% auto; background-position: center top; }
+} 
+.front-bg .hero-visual::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    /* gentle purple overlay for harmony and readability */
+    background: linear-gradient(180deg, rgba(111,66,193,0.22), rgba(0,0,0,0.18));
+    z-index: 0;
+}
+.front-bg .hero-visual img { width: 100%; height: auto; display:block; }
+
+/* Make the row stretch so hero-visual fills column height */
+.hero-section .row {
+    align-items: stretch;
+}
+.hero-section .col-lg-6 { display: flex; align-items: center; }
+.hero-section .col-lg-6 .container, .hero-section .col-lg-6 > div { width: 100%; }
+
+/* Brand highlight inside hero */
+.brand-highlight { color: var(--accent); }
+
+/* Ensure hero content sits above overlays and buttons are clickable */
+.front-bg .hero-section h1, .front-bg .hero-section p { color: var(--text-inverse) !important; }
+.front-bg .hero-section .btn { border-color: rgba(255,255,255,0.12); position: relative; z-index: 3; pointer-events: auto; }
+
+/* Small-screen adjustments */
+@media (max-width: 991.98px) {
+    .front-bg .hero-visual { min-height: 300px; border-radius: 10px; }
+}
+
+/* Responsive: adjust hero on small screens */
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 40px 0;
+        text-align: center;
+    }
+    .hero-section .btn { min-width: 140px; }
+    .hero-section::before { background: rgba(19,2,30,0.45); }
+} 
+ 
 
 .hero-image {
     animation: pulse 2s infinite;
@@ -64,8 +283,8 @@ body {
 
 .feature-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 5px 20px rgba(220, 53, 69, 0.2);
-}
+    box-shadow: 0 5px 20px rgba(111, 66, 193, 0.2);
+}   
 
 /* Donor Cards */
 .donor-card {
@@ -88,8 +307,8 @@ body {
 
 .request-card:hover {
     transform: translateY(-3px);
-    box-shadow: 0 5px 20px rgba(220, 53, 69, 0.2);
-}
+    box-shadow: 0 5px 20px rgba(111, 66, 193, 0.2);
+}   
 
 /* Inventory Cards */
 .inventory-card {
@@ -127,8 +346,8 @@ body {
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    background-color: #dc3545;
-}
+    background-color: var(--brand);
+} 
 
 /* Progress Bars */
 .progress {
@@ -149,21 +368,21 @@ body {
 }
 
 .btn-danger {
-    background-color: #dc3545;
-    border-color: #dc3545;
-}
+    background-color: var(--pink);
+    border-color: var(--pink);
+} 
 
 .btn-danger:hover {
-    background-color: #c82333;
-    border-color: #bd2130;
+    background-color: var(--pink-dark);
+    border-color: var(--pink-dark);
     transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(220, 53, 69, 0.3);
-}
+    box-shadow: 0 4px 10px rgba(111, 66, 193, 0.3);
+}   
 
 .btn-outline-danger:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(220, 53, 69, 0.2);
-}
+    box-shadow: 0 4px 10px rgba(111, 66, 193, 0.2);
+}   
 
 /* Cards */
 .card {
@@ -184,9 +403,9 @@ body {
 }
 
 .form-control:focus, .form-select:focus {
-    border-color: #dc3545;
-    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
-}
+    border-color: var(--brand);
+    box-shadow: 0 0 0 0.2rem rgba(111, 66, 193, 0.25);
+}   
 
 /* Alerts */
 .alert {
@@ -194,7 +413,63 @@ body {
     border: none;
 }
 
-/* Badges */
+/* Color Utilities - Green primary and Red accent */
+/* Keep Bootstrap 'danger' utilities mapped to the red accent (blood-related) */
+.text-danger {
+    color: var(--pink) !important; /* red */
+}
+.bg-danger {
+    background-color: var(--pink) !important;
+    color: #fff !important;
+}
+.border-danger {
+    border-color: var(--pink) !important;
+}
+.table-pink thead th {
+    background-color: var(--pink-light);
+    font-weight: 600;
+    border-top: none;
+}
+.table-danger thead th {
+    background-color: var(--pink-light) !important;
+    color: var(--pink-dark) !important;
+}
+.badge.bg-danger,
+.badge.bg-pink {
+    background-color: var(--pink) !important;
+    color: #fff !important;
+}
+
+/* Override bootstrap danger alerts to use red accent */
+.alert-danger {
+    background-color: var(--pink-light);
+    color: var(--pink-dark);
+    border: none;
+}
+
+/* Primary (brand) utilities - green */
+.bg-primary {
+    background-color: var(--brand) !important;
+    color: #fff !important;
+}
+.text-primary { color: var(--brand) !important; }
+.border-primary { border-color: var(--brand) !important; }
+.btn-primary { background-color: var(--brand) !important; border-color: var(--brand) !important; }
+.btn-primary:hover { background-color: var(--brand-dark) !important; border-color: var(--brand-dark) !important; }
+
+/* Additional helpers */
+.bg-pink {
+    background-color: var(--pink) !important;
+    color: #fff !important;
+}
+.text-pink {
+    color: var(--pink) !important;
+}
+.border-pink {
+    border-color: var(--pink) !important;
+}
+
+/* Badges */ 
 .badge {
     font-weight: 500;
     padding: 0.5em 0.75em;
@@ -223,8 +498,8 @@ footer a {
 }
 
 footer a:hover {
-    color: #dc3545 !important;
-}
+    color: var(--brand) !important;
+} 
 
 /* Social Links */
 .social-links a {
@@ -233,13 +508,25 @@ footer a:hover {
 
 .social-links a:hover {
     transform: translateY(-3px);
-    color: #dc3545 !important;
-}
+    color: var(--brand) !important;
+} 
 
 /* CTA Section */
 .cta-section {
-    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    background: linear-gradient(135deg, var(--brand) 0%, #ffffff 100%);
 }
+
+/* CTA Buttons - make Register Now and Learn More text black */
+.cta-section .btn.btn-light,
+.cta-section .btn-outline-light {
+    color: #000 !important;
+    border-color: #000 !important; /* for outline button */
+}
+
+.cta-section .btn .fas {
+    color: inherit; /* icons inherit button color */
+}
+
 
 /* Dashboard Styles */
 .dashboard-section .card {
@@ -278,8 +565,8 @@ footer a:hover {
 
 /* About Section */
 .about-section .step-number {
-    box-shadow: 0 4px 10px rgba(220, 53, 69, 0.3);
-}
+    box-shadow: 0 4px 10px rgba(111, 66, 193, 0.3);
+}   
 
 /* Error Section */
 .error-section {
@@ -345,12 +632,48 @@ footer a:hover {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #dc3545;
+    background: var(--brand);
     border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #c82333;
+    background: var(--brand-dark);
+} 
+
+/* Navbar logo sizing */
+.navbar-logo {
+    height: 28px;
+    width: auto;
+    object-fit: contain;
+}
+
+/* Brand text beside logo */
+.navbar-brand-text {
+    display: inline-block;
+    font-weight: 700;
+    color: #fff;
+    font-size: 1rem;
+    vertical-align: middle;
+}
+
+.footer-brand-text {
+    display: inline-block;
+    font-weight: 700;
+    color: #fff;
+    font-size: 1rem;
+    vertical-align: middle;
+}
+
+/* Footer logo slightly smaller */
+footer .navbar-logo {
+    height: 22px;
+}
+
+/* Responsive: smaller logos on narrow screens */
+@media (max-width: 576px) {
+    .navbar-logo {
+        height: 22px;
+    }
 }
 
 /* Print Styles */

@@ -1,4 +1,4 @@
-// BloodSync - Main JavaScript File
+// HemaLink - Main JavaScript File
 
 // DOM Ready
 document.addEventListener('DOMContentLoaded', function() {
