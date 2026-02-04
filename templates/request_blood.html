@@ -1,0 +1,205 @@
+{% extends 'base.html' %}
+
+{% block title %}Request Blood - BloodSync{% endblock %}
+
+{% block content %}
+<section class="request-section py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card shadow">
+                    <div class="card-header bg-danger text-white">
+                        <h3 class="mb-0"><i class="fas fa-hand-holding-medical me-2"></i>Request Blood</h3>
+                    </div>
+                    <div class="card-body p-4">
+                        <form method="POST" action="{{ url_for('request_blood') }}" class="needs-validation" novalidate>
+                            <!-- Requestor Information (Optional for guests) -->
+                            <h5 class="text-danger mb-3"><i class="fas fa-user me-2"></i>Requestor Information (Optional)</h5>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="requestor_id" class="form-label">Requestor ID</label>
+                                    <input type="text" class="form-control" id="requestor_id" name="requestor_id" 
+                                           placeholder="Enter if registered (e.g., REQ-X1Y2Z3A4)">
+                                    <div class="form-text">Leave blank if you're not registered</div>
+                                </div>
+                            </div>
+                            
+                            <hr class="my-4">
+                            
+                            <!-- Patient Information -->
+                            <h5 class="text-danger mb-3"><i class="fas fa-procedures me-2"></i>Patient Information</h5>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="patient_name" class="form-label">Patient Name *</label>
+                                    <input type="text" class="form-control" id="patient_name" name="patient_name" required 
+                                           placeholder="Enter patient's full name">
+                                    <div class="invalid-feedback">Please enter patient name</div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="patient_age" class="form-label">Age *</label>
+                                    <input type="number" class="form-control" id="patient_age" name="patient_age" required 
+                                           min="0" max="120" placeholder="Age">
+                                    <div class="invalid-feedback">Please enter valid age</div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="patient_gender" class="form-label">Gender *</label>
+                                    <select class="form-select" id="patient_gender" name="patient_gender" required>
+                                        <option value="">Select</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                    <div class="invalid-feedback">Please select gender</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Blood Requirement -->
+                            <h5 class="text-danger mb-3 mt-4"><i class="fas fa-tint me-2"></i>Blood Requirement</h5>
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="blood_group" class="form-label">Blood Group Required *</label>
+                                    <select class="form-select" id="blood_group" name="blood_group" required>
+                                        <option value="">Select Blood Group</option>
+                                        <option value="A+">A+</option>
+                                        <option value="A-">A-</option>
+                                        <option value="B+">B+</option>
+                                        <option value="B-">B-</option>
+                                        <option value="AB+">AB+</option>
+                                        <option value="AB-">AB-</option>
+                                        <option value="O+">O+</option>
+                                        <option value="O-">O-</option>
+                                    </select>
+                                    <div class="invalid-feedback">Please select blood group</div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="units_needed" class="form-label">Units Needed *</label>
+                                    <input type="number" class="form-control" id="units_needed" name="units_needed" required 
+                                           min="1" max="10" placeholder="Number of units">
+                                    <div class="form-text">1 unit = 450ml</div>
+                                    <div class="invalid-feedback">Please enter units needed (1-10)</div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="required_date" class="form-label">Required By Date *</label>
+                                    <input type="date" class="form-control" id="required_date" name="required_date" required>
+                                    <div class="invalid-feedback">Please select required date</div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="urgency" class="form-label">Urgency Level *</label>
+                                    <select class="form-select" id="urgency" name="urgency" required>
+                                        <option value="normal">Normal - Within 3-5 days</option>
+                                        <option value="high">High - Within 24-48 hours</option>
+                                        <option value="critical">Critical - Immediate (Within 12 hours)</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="reason" class="form-label">Reason for Requirement</label>
+                                    <input type="text" class="form-control" id="reason" name="reason" 
+                                           placeholder="e.g., Surgery, Accident, Childbirth">
+                                </div>
+                            </div>
+                            
+                            <!-- Hospital Information -->
+                            <h5 class="text-danger mb-3 mt-4"><i class="fas fa-hospital me-2"></i>Hospital Information</h5>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="hospital_name" class="form-label">Hospital Name *</label>
+                                    <input type="text" class="form-control" id="hospital_name" name="hospital_name" required 
+                                           placeholder="Enter hospital name">
+                                    <div class="invalid-feedback">Please enter hospital name</div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="hospital_address" class="form-label">Hospital Address *</label>
+                                    <input type="text" class="form-control" id="hospital_address" name="hospital_address" required 
+                                           placeholder="Enter hospital address">
+                                    <div class="invalid-feedback">Please enter hospital address</div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="city" class="form-label">City *</label>
+                                    <input type="text" class="form-control" id="city" name="city" required 
+                                           placeholder="City">
+                                    <div class="invalid-feedback">Please enter city</div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="state" class="form-label">State *</label>
+                                    <input type="text" class="form-control" id="state" name="state" required 
+                                           placeholder="State">
+                                    <div class="invalid-feedback">Please enter state</div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="contact_phone" class="form-label">Contact Phone *</label>
+                                    <input type="tel" class="form-control" id="contact_phone" name="contact_phone" required 
+                                           placeholder="10-digit number" pattern="[0-9]{10}">
+                                    <div class="invalid-feedback">Please enter valid 10-digit phone</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Contact Information -->
+                            <h5 class="text-danger mb-3 mt-4"><i class="fas fa-address-book me-2"></i>Contact Information</h5>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="contact_name" class="form-label">Contact Person Name *</label>
+                                    <input type="text" class="form-control" id="contact_name" name="contact_name" required 
+                                           placeholder="Name of contact person">
+                                    <div class="invalid-feedback">Please enter contact name</div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="contact_email" class="form-label">Contact Email</label>
+                                    <input type="email" class="form-control" id="contact_email" name="contact_email" 
+                                           placeholder="Email address (optional)">
+                                </div>
+                            </div>
+                            
+                            <!-- Terms -->
+                            <div class="form-check mb-4 mt-4">
+                                <input class="form-check-input" type="checkbox" id="confirm" name="confirm" required>
+                                <label class="form-check-label" for="confirm">
+                                    I confirm that the information provided is accurate and this is a genuine blood requirement *
+                                </label>
+                                <div class="invalid-feedback">Please confirm the information is accurate</div>
+                            </div>
+                            
+                            <!-- Submit Buttons -->
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                                <button type="submit" class="btn btn-danger btn-lg">
+                                    <i class="fas fa-paper-plane me-2"></i>Submit Blood Request
+                                </button>
+                                <a href="{{ url_for('home') }}" class="btn btn-outline-secondary btn-lg">
+                                    <i class="fas fa-times me-2"></i>Cancel
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+// Set minimum date to today
+document.getElementById('required_date').min = new Date().toISOString().split('T')[0];
+
+// Form validation
+(function() {
+    'use strict';
+    window.addEventListener('load', function() {
+        var forms = document.getElementsByClassName('needs-validation');
+        var validation = Array.prototype.filter.call(forms, function(form) {
+            form.addEventListener('submit', function(event) {
+                if (form.checkValidity() === false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    }, false);
+})();
+</script>
+{% endblock %}

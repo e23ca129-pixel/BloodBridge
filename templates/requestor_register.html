@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+
+{% block title %}Register as Requestor - BloodSync{% endblock %}
+
+{% block content %}
+<section class="registration-section py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow">
+                    <div class="card-header bg-danger text-white">
+                        <h3 class="mb-0"><i class="fas fa-hospital-user me-2"></i>Register as Requestor</h3>
+                    </div>
+                    <div class="card-body p-4">
+                        <form method="POST" action="{{ url_for('requestor_register') }}" class="needs-validation" novalidate>
+                            <!-- Personal Information -->
+                            <h5 class="text-danger mb-3"><i class="fas fa-user me-2"></i>Requestor Information</h5>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="name" class="form-label">Full Name *</label>
+                                    <input type="text" class="form-control" id="name" name="name" required 
+                                           placeholder="Enter your full name">
+                                    <div class="invalid-feedback">Please enter your name</div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="email" class="form-label">Email Address *</label>
+                                    <input type="email" class="form-control" id="email" name="email" required 
+                                           placeholder="your@email.com">
+                                    <div class="invalid-feedback">Please enter a valid email</div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="phone" class="form-label">Phone Number *</label>
+                                    <input type="tel" class="form-control" id="phone" name="phone" required 
+                                           placeholder="10-digit mobile number" pattern="[0-9]{10}">
+                                    <div class="invalid-feedback">Please enter a valid 10-digit phone number</div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="organization" class="form-label">Organization/Hospital</label>
+                                    <input type="text" class="form-control" id="organization" name="organization" 
+                                           placeholder="Hospital or Organization name (optional)">
+                                </div>
+                            </div>
+                            
+                            <!-- Address Information -->
+                            <h5 class="text-danger mb-3 mt-4"><i class="fas fa-map-marker-alt me-2"></i>Address Information</h5>
+                            <div class="mb-3">
+                                <label for="address" class="form-label">Street Address *</label>
+                                <textarea class="form-control" id="address" name="address" rows="2" required 
+                                          placeholder="Enter your complete address"></textarea>
+                                <div class="invalid-feedback">Please enter your address</div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="city" class="form-label">City *</label>
+                                    <input type="text" class="form-control" id="city" name="city" required 
+                                           placeholder="City name">
+                                    <div class="invalid-feedback">Please enter your city</div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="state" class="form-label">State *</label>
+                                    <input type="text" class="form-control" id="state" name="state" required 
+                                           placeholder="State name">
+                                    <div class="invalid-feedback">Please enter your state</div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="pincode" class="form-label">Pincode *</label>
+                                    <input type="text" class="form-control" id="pincode" name="pincode" required 
+                                           placeholder="6-digit pincode" pattern="[0-9]{6}">
+                                    <div class="invalid-feedback">Please enter a valid 6-digit pincode</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Terms and Conditions -->
+                            <div class="form-check mb-4">
+                                <input class="form-check-input" type="checkbox" id="terms" name="terms" required>
+                                <label class="form-check-label" for="terms">
+                                    I agree to the <a href="#" data-bs-toggle="modal" data-bs-target="#termsModal">Terms and Conditions</a> and confirm that all information provided is accurate *
+                                </label>
+                                <div class="invalid-feedback">You must agree to the terms</div>
+                            </div>
+                            
+                            <!-- Submit Buttons -->
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                                <button type="submit" class="btn btn-danger btn-lg">
+                                    <i class="fas fa-user-plus me-2"></i>Register as Requestor
+                                </button>
+                                <a href="{{ url_for('home') }}" class="btn btn-outline-secondary btn-lg">
+                                    <i class="fas fa-times me-2"></i>Cancel
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Terms Modal -->
+<div class="modal fade" id="termsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">Terms and Conditions</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <h6>1. Requestor Responsibilities</h6>
+                <p>You agree to provide accurate information about the blood requirement and patient details.</p>
+                
+                <h6>2. Emergency Use</h6>
+                <p>This platform is intended for genuine blood requirements. Misuse for non-emergency purposes is prohibited.</p>
+                
+                <h6>3. Privacy</h6>
+                <p>Patient information will be handled confidentially and shared only with potential donors.</p>
+                
+                <h6>4. Verification</h6>
+                <p>You may be required to provide documentation to verify the blood requirement.</p>
+                
+                <h6>5. No Guarantee</h6>
+                <p>While we strive to connect donors with requestors, we cannot guarantee availability of donors.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Form validation
+(function() {
+    'use strict';
+    window.addEventListener('load', function() {
+        var forms = document.getElementsByClassName('needs-validation');
+        var validation = Array.prototype.filter.call(forms, function(form) {
+            form.addEventListener('submit', function(event) {
+                if (form.checkValidity() === false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    }, false);
+})();
+</script>
+{% endblock %}

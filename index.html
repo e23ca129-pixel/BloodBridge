@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BloodSync - Home</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-danger fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-heartbeat me-2"></i>BloodSync
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/"><i class="fas fa-home me-1"></i>Home</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-hand-holding-heart me-1"></i>Donate
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/donor/register">Register as Donor</a></li>
+                            <li><a class="dropdown-item" href="/donor/login">Donor Login</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-hand-holding-medical me-1"></i>Request
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/request-blood">Request Blood</a></li>
+                            <li><a class="dropdown-item" href="/requestor/register">Register as Requestor</a></li>
+                            <li><a class="dropdown-item" href="/requestor/login">Requestor Login</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/search-donors"><i class="fas fa-search me-1"></i>Find Donors</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/blood-inventory"><i class="fas fa-warehouse me-1"></i>Inventory</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/dashboard"><i class="fas fa-chart-line me-1"></i>Dashboard</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    <div class="container mt-5 pt-4">
+        
+            
+        
+    </div>
+
+    <!-- Main Content -->
+    <main>
+        
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-4">Save Lives with <span class="text-danger">BloodSync</span></h1>
+                <p class="lead mb-4">Connect with blood donors and recipients in real-time. Your donation can save up to 3 lives. Join our mission to ensure no one suffers due to blood shortage.</p>
+                <div class="d-flex gap-3 flex-wrap">
+                    <a href="/donor/register" class="btn btn-danger btn-lg">
+                        <i class="fas fa-hand-holding-heart me-2"></i>Become a Donor
+                    </a>
+                    <a href="/request-blood" class="btn btn-outline-danger btn-lg">
+                        <i class="fas fa-hand-holding-medical me-2"></i>Request Blood
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center">
+                <div class="hero-image">
+                    <i class="fas fa-heartbeat text-danger" style="font-size: 200px;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Statistics Section -->
+<section class="stats-section py-5 bg-light">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-3 mb-4">
+                <div class="stat-card">
+                    <i class="fas fa-users text-danger fa-3x mb-3"></i>
+                    <h2 class="fw-bold">5</h2>
+                    <p class="text-muted">Registered Donors</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="stat-card">
+                    <i class="fas fa-hand-holding-medical text-danger fa-3x mb-3"></i>
+                    <h2 class="fw-bold">1</h2>
+                    <p class="text-muted">Blood Requests</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="stat-card">
+                    <i class="fas fa-check-circle text-danger fa-3x mb-3"></i>
+                    <h2 class="fw-bold">0</h2>
+                    <p class="text-muted">Fulfilled Requests</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="stat-card">
+                    <i class="fas fa-tint text-danger fa-3x mb-3"></i>
+                    <h2 class="fw-bold">285</h2>
+                    <p class="text-muted">Units Available</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Blood Groups Section -->
+<section class="blood-groups-section py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">Blood Type Compatibility</h2>
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead class="table-danger">
+                            <tr>
+                                <th>Blood Type</th>
+                                <th>Can Donate To</th>
+                                <th>Can Receive From</th>
+                                <th>Inventory</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                            <tr>
+                                <td><span class="badge bg-danger fs-6">A+</span></td>
+                                <td>
+                                    
+                                    
+                                    
+                                    A+, AB+
+                                    
+                                    
+                                    
+                                    
+                                </td>
+                                <td>
+                                    
+                                    
+                                    
+                                    A+, A-, O+, O-
+                                    
+                                    
+                                    
+                                    
+                                </td>
+                                <td>
+                                    <span class="badge bg-success">
+                                        50 units
+                                    </span>
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td><span class="badge bg-danger fs-6">A-</span></td>
+                                <td>
+                                    
+                                    
+                                    A+, A-, AB+, AB-
+                                    
+                                    
+                                    
+                                    
+                                    
+                                </td>
+                                <td>
+                                    
+                                    
+                                    A-, O-
+                                    
+                                    
+                                    
+                                    
+                                    
+                                </td>
+                                <td>
+                                    <span class="badge bg-warning">
+                                        30 units
+                                    </span>
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td><span class="badge bg-danger fs-6">B+</span></td>
+                                <td>
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    B+, AB+
+                                    
+                                    
+                                </td>
+                                <td>
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    B+, B-, O+, O-
+                                    
+                                    
+                                </td>
+                                <td>
+                                    <span class="badge bg-success">
+                                        45 units
+                                    </span>
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td><span class="badge bg-danger fs-6">B-</span></td>
+                                <td>
+                                    
+                                    
+                                    
+                                    
+                                    B+, B-, AB+, AB-
+                                    
+                                    
+                                    
+                                </td>
+                                <td>
+                                    
+                                    
+                                    
+                                    
+                                    B-, O-
+                                    
+                                    
+                                    
+                                </td>
+                                <td>
+                                    <span class="badge bg-warning">
+                                        25 units
+                                    </span>
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td><span class="badge bg-danger fs-6">AB+</span></td>
+                                <td>
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    AB+ Only
+                                </td>
+                                <td>
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    All Blood Types
+                                </td>
+                                <td>
+                                    <span class="badge bg-warning">
+                                        20 units
+                                    </span>
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td><span class="badge bg-danger fs-6">AB-</span></td>
+                                <td>
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    AB+, AB-
+                                    
+                                </td>
+                                <td>
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    A-, B-, AB-, O-
+                                    
+                                </td>
+                                <td>
+                                    <span class="badge bg-danger">
+                                        15 units
+                                    </span>
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td><span class="badge bg-danger fs-6">O+</span></td>
+                                <td>
+                                    
+                                    O+, A+, B+, AB+
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                </td>
+                                <td>
+                                    
+                                    O+, O-
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                </td>
+                                <td>
+                                    <span class="badge bg-success">
+                                        60 units
+                                    </span>
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td><span class="badge bg-danger fs-6">O-</span></td>
+                                <td>
+                                    All Blood Types
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                </td>
+                                <td>
+                                    O- Only
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                </td>
+                                <td>
+                                    <span class="badge bg-success">
+                                        40 units
+                                    </span>
+                                </td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">Why Choose BloodSync?</h2>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="feature-card text-center p-4">
+                    <i class="fas fa-bolt text-danger fa-3x mb-3"></i>
+                    <h4>Quick Matching</h4>
+                    <p>Our intelligent algorithm matches donors with recipients in real-time based on blood type, location, and availability.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-card text-center p-4">
+                    <i class="fas fa-shield-alt text-danger fa-3x mb-3"></i>
+                    <h4>Safe & Secure</h4>
+                    <p>All donor information is verified and protected. We ensure safe blood donation practices at certified centers.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-card text-center p-4">
+                    <i class="fas fa-map-marker-alt text-danger fa-3x mb-3"></i>
+                    <h4>Location Based</h4>
+                    <p>Find donors near you quickly. Our location-based search helps in emergency situations.</p>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-md-4 mb-4">
+                <div class="feature-card text-center p-4">
+                    <i class="fas fa-bell text-danger fa-3x mb-3"></i>
+                    <h4>Emergency Alerts</h4>
+                    <p>Get instant notifications when blood is needed urgently in your area. Be a lifesaver when it matters most.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-card text-center p-4">
+                    <i class="fas fa-history text-danger fa-3x mb-3"></i>
+                    <h4>Donation History</h4>
+                    <p>Track your donation history and know when you're eligible to donate again. Maintain your donor profile.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-card text-center p-4">
+                    <i class="fas fa-award text-danger fa-3x mb-3"></i>
+                    <h4>Recognition</h4>
+                    <p>Earn badges and recognition for your contributions. Every donation is celebrated and appreciated.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Recent Requests Section -->
+<section class="recent-requests py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">Recent Blood Requests</h2>
+        
+        <div class="row">
+            
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="request-card card h-100">
+                    <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+                        <span><i class="fas fa-tint me-2"></i>O+</span>
+                        <span class="badge bg-warning text-dark">
+                            HIGH
+                        </span>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Ramesh Iyer</h5>
+                        <p class="card-text">
+                            <i class="fas fa-hospital me-2 text-danger"></i>City General Hospital<br>
+                            <i class="fas fa-map-marker-alt me-2 text-danger"></i>Hyderabad, Telangana<br>
+                            <i class="fas fa-cubes me-2 text-danger"></i>2 units needed<br>
+                            <i class="fas fa-calendar me-2 text-danger"></i>Required by: 2025-02-05
+                        </p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="/request/BR-B5C6D7E8" class="btn btn-outline-danger btn-sm w-100">
+                            <i class="fas fa-info-circle me-1"></i>View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        <div class="text-center mt-4">
+            <a href="/search-donors" class="btn btn-danger">
+                <i class="fas fa-search me-2"></i>Find More Donors
+            </a>
+        </div>
+        
+    </div>
+</section>
+
+<!-- Call to Action Section -->
+<section class="cta-section py-5 bg-danger text-white">
+    <div class="container text-center">
+        <h2 class="mb-4">Ready to Make a Difference?</h2>
+        <p class="lead mb-4">Join thousands of donors who are saving lives every day. Your single donation can save up to 3 lives.</p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <a href="/donor/register" class="btn btn-light btn-lg text-danger fw-bold">
+                <i class="fas fa-user-plus me-2"></i>Register Now
+            </a>
+            <a href="/about" class="btn btn-outline-light btn-lg">
+                <i class="fas fa-info-circle me-2"></i>Learn More
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="how-it-works py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">How BloodSync Works</h2>
+        <div class="row">
+            <div class="col-md-3 text-center mb-4">
+                <div class="step-circle bg-danger text-white">1</div>
+                <h5 class="mt-3">Register</h5>
+                <p class="text-muted">Sign up as a donor or requestor with your details</p>
+            </div>
+            <div class="col-md-3 text-center mb-4">
+                <div class="step-circle bg-danger text-white">2</div>
+                <h5 class="mt-3">Match</h5>
+                <p class="text-muted">Our algorithm finds compatible donors</p>
+            </div>
+            <div class="col-md-3 text-center mb-4">
+                <div class="step-circle bg-danger text-white">3</div>
+                <h5 class="mt-3">Connect</h5>
+                <p class="text-muted">Get connected with donors or recipients</p>
+            </div>
+            <div class="col-md-3 text-center mb-4">
+                <div class="step-circle bg-danger text-white">4</div>
+                <h5 class="mt-3">Save Lives</h5>
+                <p class="text-muted">Complete the donation and save lives</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5><i class="fas fa-heartbeat me-2"></i>BloodSync</h5>
+                    <p>Connecting blood donors with those in need. Every drop counts, every life matters.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="/donor/register" class="text-light">Become a Donor</a></li>
+                        <li><a href="/request-blood" class="text-light">Request Blood</a></li>
+                        <li><a href="/search-donors" class="text-light">Find Donors</a></li>
+                        <li><a href="/blood-inventory" class="text-light">Blood Inventory</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Emergency Contact</h5>
+                    <p><i class="fas fa-phone me-2"></i>1800-BLOOD-HELP</p>
+                    <p><i class="fas fa-envelope me-2"></i>help@bloodsync.org</p>
+                    <div class="social-links">
+                        <a href="#" class="text-light me-3"><i class="fab fa-facebook fa-lg"></i></a>
+                        <a href="#" class="text-light me-3"><i class="fab fa-twitter fa-lg"></i></a>
+                        <a href="#" class="text-light me-3"><i class="fab fa-instagram fa-lg"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-3">
+            <div class="text-center">
+                <p class="mb-0">&copy; 2025 BloodSync. All rights reserved. | Saving Lives, One Drop at a Time</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/js/main.js"></script>
+    
+</body>
+</html>

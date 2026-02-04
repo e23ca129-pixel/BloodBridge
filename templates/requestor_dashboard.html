@@ -1,0 +1,224 @@
+{% extends 'base.html' %}
+
+{% block title %}Requestor Dashboard - BloodSync{% endblock %}
+
+{% block content %}
+<section class="dashboard-section py-4">
+    <div class="container">
+        <!-- Welcome Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card bg-danger text-white">
+                    <div class="card-body d-flex justify-content-between align-items-center">
+                        <div>
+                            <h3 class="mb-1"><i class="fas fa-hospital-user me-2"></i>Welcome, {{ requestor.name }}!</h3>
+                            <p class="mb-0">Requestor ID: <strong>{{ requestor.requestor_id }}</strong> 
+                            {% if requestor.organization != 'Individual' %}
+                            | Organization: <strong>{{ requestor.organization }}</strong>
+                            {% endif %}
+                            </p>
+                        </div>
+                        <div class="text-end d-none d-md-block">
+                            <a href="{{ url_for('request_blood') }}" class="btn btn-light text-danger fw-bold">
+                                <i class="fas fa-plus-circle me-2"></i>New Request
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="row mb-4">
+            <div class="col-md-4 mb-3">
+                <div class="card bg-primary text-white h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-clipboard-list fa-2x mb-2"></i>
+                        <h4 class="mb-0">{{ requestor.total_requests }}</h4>
+                        <small>Total Requests</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card bg-success text-white h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-check-circle fa-2x mb-2"></i>
+                        <h4 class="mb-0">{{ request_history|selectattr('status', 'equalto', 'fulfilled')|list|length }}</h4>
+                        <small>Fulfilled Requests</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card bg-warning text-dark h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-clock fa-2x mb-2"></i>
+                        <h4 class="mb-0">{{ request_history|selectattr('status', 'equalto', 'pending')|list|length }}</h4>
+                        <small>Pending Requests</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Profile Information -->
+            <div class="col-lg-4 mb-4">
+                <div class="card shadow h-100">
+                    <div class="card-header bg-danger text-white">
+                        <h5 class="mb-0"><i class="fas fa-user me-2"></i>Profile Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span><i class="fas fa-envelope text-danger me-2"></i>Email</span>
+                                <span>{{ requestor.email }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span><i class="fas fa-phone text-danger me-2"></i>Phone</span>
+                                <span>{{ requestor.phone }}</span>
+                            </li>
+                            {% if requestor.organization != 'Individual' %}
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span><i class="fas fa-building text-danger me-2"></i>Organization</span>
+                                <span>{{ requestor.organization }}</span>
+                            </li>
+                            {% endif %}
+                            <li class="list-group-item">
+                                <span><i class="fas fa-map-marker-alt text-danger me-2"></i>Address</span>
+                                <p class="mb-0 mt-1 text-muted">{{ requestor.address }}, {{ requestor.city }}, {{ requestor.state }} - {{ requestor.pincode }}</p>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span><i class="fas fa-calendar text-danger me-2"></i>Registered On</span>
+                                <span>{{ requestor.registered_at[:10] }}</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="col-lg-4 mb-4">
+                <div class="card shadow h-100">
+                    <div class="card-header bg-danger text-white">
+                        <h5 class="mb-0"><i class="fas fa-bolt me-2"></i>Quick Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <a href="{{ url_for('request_blood') }}" class="btn btn-danger">
+                                <i class="fas fa-plus-circle me-2"></i>Create New Blood Request
+                            </a>
+                            <a href="{{ url_for('search_donors') }}" class="btn btn-outline-primary">
+                                <i class="fas fa-search me-2"></i>Search for Donors
+                            </a>
+                            <a href="{{ url_for('blood_inventory_view') }}" class="btn btn-outline-info">
+                                <i class="fas fa-warehouse me-2"></i>Check Blood Inventory
+                            </a>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <h6><i class="fas fa-lightbulb text-warning me-2"></i>Tips</h6>
+                            <ul class="list-unstyled small">
+                                <li><i class="fas fa-check text-success me-2"></i>Provide accurate patient details</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Mark urgency level correctly</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Keep contact information updated</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Respond to donor inquiries promptly</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Emergency Contact -->
+            <div class="col-lg-4 mb-4">
+                <div class="card shadow h-100 border-danger">
+                    <div class="card-header bg-danger text-white">
+                        <h5 class="mb-0"><i class="fas fa-phone-alt me-2"></i>Emergency Contacts</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-danger">
+                            <h6><i class="fas fa-exclamation-triangle me-2"></i>24/7 Helpline</h6>
+                            <h4 class="mb-0">1800-BLOOD-HELP</h4>
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span><i class="fas fa-hospital text-danger me-2"></i>National Blood Bank</span>
+                                <a href="tel:1910" class="btn btn-sm btn-outline-danger">1910</a>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span><i class="fas fa-ambulance text-danger me-2"></i>Emergency Services</span>
+                                <a href="tel:108" class="btn btn-sm btn-outline-danger">108</a>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span><i class="fas fa-envelope text-danger me-2"></i>Email Support</span>
+                                <a href="mailto:help@bloodsync.org" class="btn btn-sm btn-outline-danger">Email</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Request History -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow">
+                    <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="fas fa-history me-2"></i>Request History</h5>
+                        <a href="{{ url_for('request_blood') }}" class="btn btn-light btn-sm text-danger">
+                            <i class="fas fa-plus me-1"></i>New Request
+                        </a>
+                    </div>
+                    <div class="card-body">
+                        {% if request_history %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Request ID</th>
+                                        <th>Patient</th>
+                                        <th>Blood Group</th>
+                                        <th>Units</th>
+                                        <th>Required Date</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for req in request_history|sort(attribute='created_at', reverse=true) %}
+                                    <tr>
+                                        <td><code>{{ req.request_id }}</code></td>
+                                        <td>{{ req.patient_name }}</td>
+                                        <td><span class="badge bg-danger">{{ req.blood_group }}</span></td>
+                                        <td>{{ req.units_needed }}</td>
+                                        <td>{{ req.required_date }}</td>
+                                        <td>
+                                            <span class="badge {% if req.status == 'fulfilled' %}bg-success{% elif req.status == 'partial' %}bg-warning text-dark{% else %}bg-secondary{% endif %}">
+                                                {{ req.status|upper }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <a href="{{ url_for('request_details', request_id=req.request_id) }}" class="btn btn-sm btn-outline-danger">
+                                                <i class="fas fa-eye me-1"></i>View
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-clipboard-list text-muted fa-3x mb-3"></i>
+                            <h5 class="text-muted">No requests yet</h5>
+                            <p class="text-muted">Create your first blood request to get started</p>
+                            <a href="{{ url_for('request_blood') }}" class="btn btn-danger">
+                                <i class="fas fa-plus-circle me-2"></i>Create Request
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}Server Error - BloodSync{% endblock %}
+
+{% block content %}
+<section class="error-section py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 text-center">
+                <i class="fas fa-server text-danger" style="font-size: 100px;"></i>
+                <h1 class="display-1 fw-bold mt-4">500</h1>
+                <h2 class="mb-4">Server Error</h2>
+                <p class="lead text-muted mb-4">Something went wrong on our end. Please try again later.</p>
+                <a href="{{ url_for('home') }}" class="btn btn-danger btn-lg">
+                    <i class="fas fa-home me-2"></i>Go Home
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

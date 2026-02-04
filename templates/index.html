@@ -1,0 +1,265 @@
+{% extends 'base.html' %}
+
+{% block title %}BloodSync - Home{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-4">Save Lives with <span class="text-danger">BloodSync</span></h1>
+                <p class="lead mb-4">Connect with blood donors and recipients in real-time. Your donation can save up to 3 lives. Join our mission to ensure no one suffers due to blood shortage.</p>
+                <div class="d-flex gap-3 flex-wrap">
+                    <a href="{{ url_for('donor_register') }}" class="btn btn-danger btn-lg">
+                        <i class="fas fa-hand-holding-heart me-2"></i>Become a Donor
+                    </a>
+                    <a href="{{ url_for('request_blood') }}" class="btn btn-outline-danger btn-lg">
+                        <i class="fas fa-hand-holding-medical me-2"></i>Request Blood
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center">
+                <div class="hero-image">
+                    <i class="fas fa-heartbeat text-danger" style="font-size: 200px;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Statistics Section -->
+<section class="stats-section py-5 bg-light">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-3 mb-4">
+                <div class="stat-card">
+                    <i class="fas fa-users text-danger fa-3x mb-3"></i>
+                    <h2 class="fw-bold">{{ stats.total_donors }}</h2>
+                    <p class="text-muted">Registered Donors</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="stat-card">
+                    <i class="fas fa-hand-holding-medical text-danger fa-3x mb-3"></i>
+                    <h2 class="fw-bold">{{ stats.total_requests }}</h2>
+                    <p class="text-muted">Blood Requests</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="stat-card">
+                    <i class="fas fa-check-circle text-danger fa-3x mb-3"></i>
+                    <h2 class="fw-bold">{{ stats.fulfilled_requests }}</h2>
+                    <p class="text-muted">Fulfilled Requests</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="stat-card">
+                    <i class="fas fa-tint text-danger fa-3x mb-3"></i>
+                    <h2 class="fw-bold">{{ stats.total_units }}</h2>
+                    <p class="text-muted">Units Available</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Blood Groups Section -->
+<section class="blood-groups-section py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">Blood Type Compatibility</h2>
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead class="table-danger">
+                            <tr>
+                                <th>Blood Type</th>
+                                <th>Can Donate To</th>
+                                <th>Can Receive From</th>
+                                <th>Inventory</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for bg, data in stats.inventory.items() %}
+                            <tr>
+                                <td><span class="badge bg-danger fs-6">{{ bg }}</span></td>
+                                <td>
+                                    {% if bg == 'O-' %}All Blood Types{% endif %}
+                                    {% if bg == 'O+' %}O+, A+, B+, AB+{% endif %}
+                                    {% if bg == 'A-' %}A+, A-, AB+, AB-{% endif %}
+                                    {% if bg == 'A+' %}A+, AB+{% endif %}
+                                    {% if bg == 'B-' %}B+, B-, AB+, AB-{% endif %}
+                                    {% if bg == 'B+' %}B+, AB+{% endif %}
+                                    {% if bg == 'AB-' %}AB+, AB-{% endif %}
+                                    {% if bg == 'AB+' %}AB+ Only{% endif %}
+                                </td>
+                                <td>
+                                    {% if bg == 'O-' %}O- Only{% endif %}
+                                    {% if bg == 'O+' %}O+, O-{% endif %}
+                                    {% if bg == 'A-' %}A-, O-{% endif %}
+                                    {% if bg == 'A+' %}A+, A-, O+, O-{% endif %}
+                                    {% if bg == 'B-' %}B-, O-{% endif %}
+                                    {% if bg == 'B+' %}B+, B-, O+, O-{% endif %}
+                                    {% if bg == 'AB-' %}A-, B-, AB-, O-{% endif %}
+                                    {% if bg == 'AB+' %}All Blood Types{% endif %}
+                                </td>
+                                <td>
+                                    <span class="badge {% if data.units < 20 %}bg-danger{% elif data.units < 40 %}bg-warning{% else %}bg-success{% endif %}">
+                                        {{ data.units }} units
+                                    </span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">Why Choose BloodSync?</h2>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="feature-card text-center p-4">
+                    <i class="fas fa-bolt text-danger fa-3x mb-3"></i>
+                    <h4>Quick Matching</h4>
+                    <p>Our intelligent algorithm matches donors with recipients in real-time based on blood type, location, and availability.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-card text-center p-4">
+                    <i class="fas fa-shield-alt text-danger fa-3x mb-3"></i>
+                    <h4>Safe & Secure</h4>
+                    <p>All donor information is verified and protected. We ensure safe blood donation practices at certified centers.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-card text-center p-4">
+                    <i class="fas fa-map-marker-alt text-danger fa-3x mb-3"></i>
+                    <h4>Location Based</h4>
+                    <p>Find donors near you quickly. Our location-based search helps in emergency situations.</p>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-md-4 mb-4">
+                <div class="feature-card text-center p-4">
+                    <i class="fas fa-bell text-danger fa-3x mb-3"></i>
+                    <h4>Emergency Alerts</h4>
+                    <p>Get instant notifications when blood is needed urgently in your area. Be a lifesaver when it matters most.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-card text-center p-4">
+                    <i class="fas fa-history text-danger fa-3x mb-3"></i>
+                    <h4>Donation History</h4>
+                    <p>Track your donation history and know when you're eligible to donate again. Maintain your donor profile.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-card text-center p-4">
+                    <i class="fas fa-award text-danger fa-3x mb-3"></i>
+                    <h4>Recognition</h4>
+                    <p>Earn badges and recognition for your contributions. Every donation is celebrated and appreciated.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Recent Requests Section -->
+<section class="recent-requests py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">Recent Blood Requests</h2>
+        {% if recent_requests %}
+        <div class="row">
+            {% for req in recent_requests %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="request-card card h-100">
+                    <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+                        <span><i class="fas fa-tint me-2"></i>{{ req.blood_group }}</span>
+                        <span class="badge {% if req.urgency == 'high' %}bg-warning text-dark{% elif req.urgency == 'critical' %}bg-dark{% else %}bg-light text-dark{% endif %}">
+                            {{ req.urgency|upper }}
+                        </span>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ req.patient_name }}</h5>
+                        <p class="card-text">
+                            <i class="fas fa-hospital me-2 text-danger"></i>{{ req.hospital_name }}<br>
+                            <i class="fas fa-map-marker-alt me-2 text-danger"></i>{{ req.city }}, {{ req.state }}<br>
+                            <i class="fas fa-cubes me-2 text-danger"></i>{{ req.units_needed }} units needed<br>
+                            <i class="fas fa-calendar me-2 text-danger"></i>Required by: {{ req.required_date }}
+                        </p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{{ url_for('request_details', request_id=req.request_id) }}" class="btn btn-outline-danger btn-sm w-100">
+                            <i class="fas fa-info-circle me-1"></i>View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-4">
+            <a href="{{ url_for('search_donors') }}" class="btn btn-danger">
+                <i class="fas fa-search me-2"></i>Find More Donors
+            </a>
+        </div>
+        {% else %}
+        <div class="alert alert-info text-center">
+            <i class="fas fa-info-circle me-2"></i>No active blood requests at the moment.
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Call to Action Section -->
+<section class="cta-section py-5 bg-danger text-white">
+    <div class="container text-center">
+        <h2 class="mb-4">Ready to Make a Difference?</h2>
+        <p class="lead mb-4">Join thousands of donors who are saving lives every day. Your single donation can save up to 3 lives.</p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <a href="{{ url_for('donor_register') }}" class="btn btn-light btn-lg text-danger fw-bold">
+                <i class="fas fa-user-plus me-2"></i>Register Now
+            </a>
+            <a href="{{ url_for('about') }}" class="btn btn-outline-light btn-lg">
+                <i class="fas fa-info-circle me-2"></i>Learn More
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="how-it-works py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">How BloodSync Works</h2>
+        <div class="row">
+            <div class="col-md-3 text-center mb-4">
+                <div class="step-circle bg-danger text-white">1</div>
+                <h5 class="mt-3">Register</h5>
+                <p class="text-muted">Sign up as a donor or requestor with your details</p>
+            </div>
+            <div class="col-md-3 text-center mb-4">
+                <div class="step-circle bg-danger text-white">2</div>
+                <h5 class="mt-3">Match</h5>
+                <p class="text-muted">Our algorithm finds compatible donors</p>
+            </div>
+            <div class="col-md-3 text-center mb-4">
+                <div class="step-circle bg-danger text-white">3</div>
+                <h5 class="mt-3">Connect</h5>
+                <p class="text-muted">Get connected with donors or recipients</p>
+            </div>
+            <div class="col-md-3 text-center mb-4">
+                <div class="step-circle bg-danger text-white">4</div>
+                <h5 class="mt-3">Save Lives</h5>
+                <p class="text-muted">Complete the donation and save lives</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

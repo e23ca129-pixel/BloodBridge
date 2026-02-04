@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}Requestor Login - BloodSync{% endblock %}
+
+{% block content %}
+<section class="login-section py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <div class="card shadow">
+                    <div class="card-header bg-danger text-white text-center">
+                        <h3 class="mb-0"><i class="fas fa-hospital-user me-2"></i>Requestor Login</h3>
+                    </div>
+                    <div class="card-body p-4">
+                        <form method="POST" action="{{ url_for('requestor_login') }}">
+                            <div class="mb-3">
+                                <label for="requestor_id" class="form-label">Requestor ID *</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+                                    <input type="text" class="form-control" id="requestor_id" name="requestor_id" 
+                                           required placeholder="Enter your Requestor ID (e.g., REQ-X1Y2Z3A4)">
+                                </div>
+                                <div class="form-text">Your Requestor ID was provided during registration</div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="email" class="form-label">Email Address *</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                    <input type="email" class="form-control" id="email" name="email" 
+                                           required placeholder="Enter your registered email">
+                                </div>
+                            </div>
+                            
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-danger btn-lg">
+                                    <i class="fas fa-sign-in-alt me-2"></i>Login
+                                </button>
+                            </div>
+                        </form>
+                        
+                        <hr class="my-4">
+                        
+                        <div class="text-center">
+                            <p class="mb-2">Don't have an account?</p>
+                            <a href="{{ url_for('requestor_register') }}" class="btn btn-outline-danger">
+                                <i class="fas fa-user-plus me-2"></i>Register as Requestor
+                            </a>
+                        </div>
+                        
+                        <div class="mt-4 alert alert-info">
+                            <h6><i class="fas fa-info-circle me-2"></i>Sample Login Credentials</h6>
+                            <p class="mb-1"><strong>Requestor ID:</strong> REQ-X1Y2Z3A4</p>
+                            <p class="mb-0"><strong>Email:</strong> meera@hospital.com</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
