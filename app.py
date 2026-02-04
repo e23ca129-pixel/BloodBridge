@@ -3,7 +3,6 @@ from datetime import datetime, timedelta
 import uuid
 import json
 import os
-import boto3
 from functools import wraps
 
 app = Flask(__name__)
@@ -158,7 +157,8 @@ def match_blood_request(request_data):
         'exact_match_inventory': inventory_available,
         'compatible_donors': scored_donors[:10],  # Top 10 matches
         'total_compatible': len(scored_donors),
-        'fulfillable': inventory_available >= units_needed or len(scored_donors) > 0
+        'fulfillable': inventory_available >= units_needed or len(scored_donors) > 0,
+        'inventory': blood_inventory
     }
 
 def update_inventory(blood_group, units, operation='add'):
