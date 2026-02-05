@@ -119,7 +119,10 @@ def get_item(table, key):
     if table is requests_table or (not use_aws and table == REQUESTS_TABLE):
         return local_requests.get(key.get('request_id'))
     if table is inventory_table or (not use_aws and table == INVENTORY_TABLE):
-        return local_inventory.get(key.get('blood_group'))
+        inv = local_inventory.get(key.get('blood_group'))
+        if inv is None:
+            return None
+        return { 'blood_group': key.get('blood_group'), **inv }
     return None
 
 
@@ -141,7 +144,7 @@ def scan_table(table, filter_expression=None):
     if table is donations_table or (not use_aws and table == DONATIONS_TABLE):
         return list(local_donations.values())
     if table is inventory_table or (not use_aws and table == INVENTORY_TABLE):
-        return list(local_inventory.values())
+        return [ { 'blood_group': k, **v } for k, v in local_inventory.items() ]
     return []
 
 
@@ -260,17 +263,17 @@ def donor_register():
         donor_id = _gen_id('DON')
         donor = {
             'donor_id': donor_id,
-            'name': request.form['name'],
-            'email': request.form['email'],
-            'phone': request.form['phone'],
-            'age': int(request.form['age']),
-            'gender': request.form['gender'],
-            'blood_group': request.form['blood_group'],
-            'weight': float(request.form['weight']),
-            'address': request.form['address'],
-            'city': request.form['city'],
-            'state': request.form['state'],
-            'pincode': request.form['pincode'],
+            'name': request.form.get('name', '').strip(),
+            'email': request.form.get('email', '').strip(),
+            'phone': request.form.get('phone', '').strip(),
+            'age': int(request.form.get('age') or 0),
+            'gender': request.form.get('gender', '').strip(),
+            'blood_group': request.form.get('blood_group', '').strip(),
+            'weight': float(request.form.get('weight') or 0.0),
+            'address': request.form.get('address', '').strip(),
+            'city': request.form.get('city', '').strip(),
+            'state': request.form.get('state', '').strip(),
+            'pincode': request.form.get('pincode', '').strip(),
             'medical_history': request.form.get('medical_history', 'None'),
             'available': True,
             'status': 'active',
@@ -304,8 +307,8 @@ def donor_register():
 @app.route('/donor/login', methods=['GET', 'POST'])
 def donor_login():
     if request.method == 'POST':
-        donor_id = request.form['donor_id']
-        email = request.form['email']
+        donor_id = request.form.get('donor_id', '').strip()
+        email = request.form.get('email', '').strip()
         donor = get_item(donors_table, {'donor_id': donor_id})
         if donor and donor.get('email') == email:
             session['donor_id'] = donor_id
@@ -367,14 +370,14 @@ def requestor_register():
         requestor_id = _gen_id('REQ')
         requestor = {
             'requestor_id': requestor_id,
-            'name': request.form['name'],
-            'email': request.form['email'],
-            'phone': request.form['phone'],
+            'name': request.form.get('name', '').strip(),
+            'email': request.form.get('email', '').strip(),
+            'phone': request.form.get('phone', '').strip(),
             'organization': request.form.get('organization', 'Individual'),
-            'address': request.form['address'],
-            'city': request.form['city'],
-            'state': request.form['state'],
-            'pincode': request.form['pincode'],
+            'address': request.form.get('address', '').strip(),
+            'city': request.form.get('city', '').strip(),
+            'state': request.form.get('state', '').strip(),
+            'pincode': request.form.get('pincode', '').strip(),
             'registered_at': _now(),
             'total_requests': 0
         }
@@ -401,21 +404,21 @@ def request_blood():
         request_data = {
             'request_id': request_id,
             'requestor_id': request.form.get('requestor_id', 'GUEST'),
-            'patient_name': request.form['patient_name'],
-            'patient_age': int(request.form['patient_age']),
-            'patient_gender': request.form['patient_gender'],
-            'blood_group': request.form['blood_group'],
-            'units_needed': int(request.form['units_needed']),
-            'hospital_name': request.form['hospital_name'],
-            'hospital_address': request.form['hospital_address'],
+            'patient_name': request.form.get('patient_name', '').strip(),
+            'patient_age': int(request.form.get('patient_age') or 0),
+            'patient_gender': request.form.get('patient_gender', '').strip(),
+            'blood_group': request.form.get('blood_group', '').strip(),
+            'units_needed': int(request.form.get('units_needed') or 1),
+            'hospital_name': request.form.get('hospital_name', '').strip(),
+            'hospital_address': request.form.get('hospital_address', '').strip(),
             'location': request.form.get('city', ''),
             'city': request.form.get('city', ''),
             'state': request.form.get('state', ''),
-            'contact_name': request.form['contact_name'],
-            'contact_phone': request.form['contact_phone'],
+            'contact_name': request.form.get('contact_name', '').strip(),
+            'contact_phone': request.form.get('contact_phone', '').strip(),
             'contact_email': request.form.get('contact_email', ''),
             'urgency': request.form.get('urgency', 'normal'),
-            'required_date': request.form['required_date'],
+            'required_date': request.form.get('required_date', ''),
             'reason': request.form.get('reason', ''),
             'status': 'pending',
             'created_at': _now(),

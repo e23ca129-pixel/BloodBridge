@@ -20,4 +20,78 @@
                 <div class="card bg-primary text-white text-center h-100">
                     <div class="card-body">
                         <i class="fas fa-tint fa-3x mb-3"></i>
-                        <h3>{{ stats.get('total_units', 0) }}</h3>
+                        <h3>{{ stats.get('total_units', 0) }}</h3>                        <p class="card-text">Total Units</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card bg-success text-white text-center h-100">
+                    <div class="card-body">
+                        <i class="fas fa-check-circle fa-3x mb-3"></i>
+                        <h3>{{ stats.get('fulfilled', 0) }}</h3>
+                        <p class="card-text">Fulfilled Requests</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card bg-warning text-white text-center h-100">
+                    <div class="card-body">
+                        <i class="fas fa-exclamation-circle fa-3x mb-3"></i>
+                        <h3>{{ stats.get('partial', 0) }}</h3>
+                        <p class="card-text">Partial Requests</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card bg-danger text-white text-center h-100">
+                    <div class="card-body">
+                        <i class="fas fa-times-circle fa-3x mb-3"></i>
+                        <h3>{{ stats.get('pending', 0) }}</h3>
+                        <p class="card-text">Pending Requests</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Blood Group Table -->
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Blood Group Availability</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Blood Group</th>
+                                <th>Units Available</th>
+                                <th>Last Updated</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for blood_group, data in inventory.items() %}
+                            <tr>
+                                <td><strong>{{ blood_group }}</strong></td>
+                                <td>{{ data.units }}</td>
+                                <td>{{ data.get('last_updated', 'N/A') }}</td>
+                                <td>
+                                    {% if data.units > 5 %}
+                                    <span class="badge bg-success">Available</span>
+                                    {% elif data.units > 0 %}
+                                    <span class="badge bg-warning">Low Stock</span>
+                                    {% else %}
+                                    <span class="badge bg-danger">Out of Stock</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

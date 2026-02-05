@@ -191,6 +191,28 @@
                         {% endif %}
                     </div>
                 </div>
+
+                <!-- Inventory Donation Section -->
+                <div class="card shadow mt-4">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0"><i class="fas fa-warehouse me-2"></i>Donate to Blood Bank Inventory</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if can_donate_now %}
+                        <p class="text-muted mb-3">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Help the blood bank inventory by directly donating blood units that can be used for any patient in need.
+                        </p>
+                        <button class="btn btn-info w-100" data-bs-toggle="modal" data-bs-target="#donateInventoryModal">
+                            <i class="fas fa-heart me-2"></i>Donate to Inventory
+                        </button>
+                        {% else %}
+                        <div class="alert alert-warning mb-0">
+                            <i class="fas fa-clock me-2"></i>You are currently not eligible to donate. Please wait 56 days since your last donation.
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -327,4 +349,52 @@
         </div>
     </div>
 </div>
+
+<!-- Donate to Inventory Modal -->
+<div class="modal fade" id="donateInventoryModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title"><i class="fas fa-warehouse me-2"></i>Donate Blood to Inventory</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{{ url_for('donate_to_inventory', donor_id=donor.donor_id) }}">
+                <div class="modal-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>Your donation will help patients in need from the blood bank inventory.
+                    </div>
+                    <div class="mb-3">
+                        <label for="inv_blood_group" class="form-label">Blood Group *</label>
+                        <select class="form-select" id="inv_blood_group" name="blood_group" required>
+                            <option value="{{ donor.blood_group }}" selected>{{ donor.blood_group }} (Your Group)</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="inv_donation_center" class="form-label">Donation Center *</label>
+                        <input type="text" class="form-control" id="inv_donation_center" name="donation_center" 
+                               required placeholder="Enter donation center name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="inv_units" class="form-label">Units to Donate *</label>
+                        <select class="form-select" id="inv_units" name="units" required>
+                            <option value="1">1 Unit (450ml)</option>
+                            <option value="2">2 Units</option>
+                            <option value="3">3 Units</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="inv_notes" class="form-label">Notes (Optional)</label>
+                        <textarea class="form-control" id="inv_notes" name="notes" rows="2" 
+                                  placeholder="Any additional information"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-info">Confirm Inventory Donation</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 {% endblock %}

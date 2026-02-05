@@ -22,6 +22,12 @@ blood_requests_db = {}
 # Donations dictionary: {donation_id: donation_data}
 donations_db = {}
 
+# Donation Fulfillments - tracks donor to requestor donations: {fulfillment_id: fulfillment_data}
+donation_fulfillments_db = {}
+
+# Inventory transactions - tracks all inventory changes
+inventory_transactions_db = []
+
 # Blood inventory by blood group
 blood_inventory = {
     'A+': {'units': 50, 'donors': []},
@@ -84,7 +90,7 @@ def get_compatible_donors(blood_group, location=None):
                     compatible_donors.append(donor)
     
     # Sort by last donation date (most recent first)
-    compatible_donors.sort(key=lambda x: x.get('last_donation', '1900-01-01'), reverse=True)
+    compatible_donors.sort(key=lambda x: x.get('last_donation') or '1900-01-01', reverse=True)
     return compatible_donors
 
 def can_donate(last_donation_date):
@@ -193,6 +199,54 @@ def get_statistics():
         'critical_groups': critical_groups,
         'inventory': blood_inventory
     }
+
+def generate_fulfillment_id():
+    """Generate unique fulfillment ID"""
+    return f"FUL-{uuid.uuid4().hex[:8].upper()}"
+
+def get_matching_donors_for_request(request_data):
+    """
+    Get matching donors for a blood request
+    Returns list of donors who accepted or can donate
+    """
+    blood_group = request_data['blood_group']
+    compatible_groups = BLOOD_COMPATIBILITY.get(blood_group, [])
+    matching_donors = []
+    
+    for donor_id, donor in donors_db.items():
+        if donor['blood_group'] in compatible_groups:
+            if donor['available'] and donor['status'] == 'active':
+                if can_donate(donor.get('last_donation')):
+                    matching_donors.append(donor)
+    
+    return matching_donors
+
+def get_request_remaining_units(request_id):
+    """Get remaining units needed for a blood request"""
+    request_data = blood_requests_db.get(request_id)
+    if not request_data:
+        return 0
+    
+    fulfilled = request_data.get('fulfilled_units', 0)
+    needed = request_data['units_needed']
+    return max(0, needed - fulfilled)
+
+def get_donor_request_donations(donor_id, request_id):
+    """Get all donations from a donor for a specific request"""
+    fulfillments = [f for f in donation_fulfillments_db.values() 
+                   if f['donor_id'] == donor_id and f['request_id'] == request_id]
+    return fulfillments
+
+def record_inventory_transaction(blood_group, units, transaction_type, details=''):
+    """Record an inventory transaction"""
+    transaction = {
+        'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+        'blood_group': blood_group,
+        'units': units,
+        'type': transaction_type,  # 'add', 'remove', 'donated', 'withdrawn'
+        'details': details
+    }
+    inventory_transactions_db.append(transaction)
 
 # ============== ROUTES ==============
 
@@ -352,6 +406,116 @@ def record_donation(donor_id):
     flash(f'Donation recorded successfully! Donation ID: {donation_id}', 'success')
     return redirect(url_for('donor_dashboard', donor_id=donor_id))
 
+@app.route('/donor/donate-to-inventory/<donor_id>', methods=['POST'])
+def donate_to_inventory(donor_id):
+    """Donor donation to blood inventory"""
+    donor = donors_db.get(donor_id)
+    if not donor:
+        flash('Donor not found!', 'error')
+        return redirect(url_for('home'))
+    
+    if not can_donate(donor.get('last_donation')):
+        flash('You must wait 56 days between donations!', 'error')
+        return redirect(url_for('donor_dashboard', donor_id=donor_id))
+    
+    donation_id = generate_donation_id()
+    units = int(request.form.get('units', 1))
+    blood_group = request.form.get('blood_group', donor['blood_group'])
+    
+    if units <= 0:
+        flash('Units must be greater than 0!', 'error')
+        return redirect(url_for('donor_dashboard', donor_id=donor_id))
+    
+    donation_data = {
+        'donation_id': donation_id,
+        'donor_id': donor_id,
+        'donor_name': donor['name'],
+        'blood_group': blood_group,
+        'units': units,
+        'donation_date': datetime.now().strftime('%Y-%m-%d'),
+        'donation_time': datetime.now().strftime('%H:%M:%S'),
+        'donation_center': request.form.get('donation_center', 'Main Center'),
+        'donation_type': 'inventory',  # Mark as inventory donation
+        'request_id': None,
+        'requestor_id': None,
+        'status': 'completed',
+        'notes': request.form.get('notes', '')
+    }
+    
+    donations_db[donation_id] = donation_data
+    
+    # Update donor record
+    donor['last_donation'] = donation_data['donation_date']
+    donor['total_donations'] += 1
+    
+    # Update inventory
+    update_inventory(blood_group, units, 'add')
+    record_inventory_transaction(blood_group, units, 'donated', f'Donor {donor_id} donated {units} units')
+    
+    flash(f'Thank you for donating {units} unit(s) of {blood_group} blood! Donation ID: {donation_id}', 'success')
+    return redirect(url_for('donor_dashboard', donor_id=donor_id))
+
+@app.route('/donor/accept-request/<request_id>/<donor_id>', methods=['POST'])
+def donor_accept_request(request_id, donor_id):
+    """Donor accepts a blood request"""
+    donor = donors_db.get(donor_id)
+    request_data = blood_requests_db.get(request_id)
+    
+    if not donor or not request_data:
+        flash('Donor or request not found!', 'error')
+        return redirect(url_for('home'))
+    
+    if not can_donate(donor.get('last_donation')):
+        flash('You are not eligible to donate at this time!', 'error')
+        return redirect(url_for('donor_dashboard', donor_id=donor_id))
+    
+    # Create a fulfillment record
+    fulfillment_id = generate_fulfillment_id()
+    units_to_donate = min(
+        int(request.form.get('units', 1)),
+        get_request_remaining_units(request_id)
+    )
+    
+    if units_to_donate <= 0:
+        flash('Invalid number of units!', 'error')
+        return redirect(url_for('donor_dashboard', donor_id=donor_id))
+    
+    fulfillment_data = {
+        'fulfillment_id': fulfillment_id,
+        'request_id': request_id,
+        'donor_id': donor_id,
+        'donor_name': donor['name'],
+        'requestor_id': request_data['requestor_id'],
+        'blood_group': request_data['blood_group'],
+        'units': units_to_donate,
+        'status': 'accepted',  # pending > accepted > confirmed > completed
+        'created_at': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+        'accepted_at': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+        'confirmed_at': None,
+        'completed_at': None
+    }
+    
+    donation_fulfillments_db[fulfillment_id] = fulfillment_data
+    
+    # Add to request's accepted donors list
+    if 'accepted_donors' not in request_data:
+        request_data['accepted_donors'] = []
+    
+    request_data['accepted_donors'].append({
+        'donor_id': donor_id,
+        'donor_name': donor['name'],
+        'fulfillment_id': fulfillment_id,
+        'units': units_to_donate,
+        'status': 'accepted'
+    })
+    
+    # Update request status if needed
+    if request_data['status'] == 'pending':
+        request_data['status'] = 'pending'  # Still waiting for confirmation
+    
+    flash(f'You have accepted to donate {units_to_donate} unit(s) for request {request_id}!', 'success')
+    return redirect(url_for('donor_dashboard', donor_id=donor_id))
+
 # ============== REQUESTOR ROUTES ==============
 
 @app.route('/requestor/register', methods=['GET', 'POST'])
@@ -412,6 +576,139 @@ def requestor_login():
     
     return render_template('requestor_login.html')
 
+@app.route('/requestor/confirm-donation/<fulfillment_id>', methods=['POST'])
+def requestor_confirm_donation(fulfillment_id):
+    """Requestor confirms a donor's donation acceptance"""
+    fulfillment = donation_fulfillments_db.get(fulfillment_id)
+    if not fulfillment:
+        flash('Fulfillment not found!', 'error')
+        return redirect(url_for('home'))
+    
+    request_id = fulfillment['request_id']
+    donor_id = fulfillment['donor_id']
+    request_data = blood_requests_db.get(request_id)
+    donor = donors_db.get(donor_id)
+    
+    if not request_data or not donor:
+        flash('Invalid data!', 'error')
+        return redirect(url_for('home'))
+    
+    # Check if donor can donate
+    if not can_donate(donor.get('last_donation')):
+        flash('Donor is not eligible to donate at this time!', 'error')
+        return redirect(url_for('requestor_dashboard', requestor_id=fulfillment['requestor_id']))
+    
+    # Update fulfillment status
+    fulfillment['status'] = 'confirmed'
+    fulfillment['confirmed_at'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    
+    # Record the donation
+    donation_id = generate_donation_id()
+    donation_data = {
+        'donation_id': donation_id,
+        'donor_id': donor_id,
+        'donor_name': donor['name'],
+        'requestor_id': fulfillment['requestor_id'],
+        'request_id': request_id,
+        'blood_group': fulfillment['blood_group'],
+        'units': fulfillment['units'],
+        'donation_date': datetime.now().strftime('%Y-%m-%d'),
+        'donation_time': datetime.now().strftime('%H:%M:%S'),
+        'donation_type': 'fulfillment',
+        'status': 'confirmed',
+        'notes': request.form.get('notes', '')
+    }
+    
+    donations_db[donation_id] = donation_data
+    fulfillment['donation_id'] = donation_id
+    
+    # Update donor record
+    donor['last_donation'] = donation_data['donation_date']
+    donor['total_donations'] += 1
+    
+    # Update request fulfillment
+    request_data['fulfilled_units'] = request_data.get('fulfilled_units', 0) + fulfillment['units']
+    
+    # Check if request is now fully fulfilled
+    remaining = get_request_remaining_units(request_id)
+    if remaining <= 0:
+        request_data['status'] = 'fulfilled'
+        fulfillment['status'] = 'completed'
+        fulfillment['completed_at'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        # Remove from inventory (we assume confirmed donations are stored)
+        # Note: In a real system, you might not remove from inventory if both are the same pool
+    
+    flash(f'Donation from {donor['name']} confirmed for {fulfillment['units']} unit(s)!', 'success')
+    return redirect(url_for('requestor_dashboard', requestor_id=fulfillment['requestor_id']))
+
+@app.route('/requestor/take-from-inventory/<requestor_id>', methods=['POST'])
+def requestor_take_from_inventory(requestor_id):
+    """Requestor withdraws blood from inventory"""
+    requestor = requestors_db.get(requestor_id)
+    if not requestor:
+        flash('Requestor not found!', 'error')
+        return redirect(url_for('home'))
+    
+    blood_group = request.form.get('blood_group')
+    units_requested = int(request.form.get('units', 0))
+    request_id = request.form.get('request_id', '')
+    
+    if units_requested <= 0:
+        flash('Units must be greater than 0!', 'error')
+        return redirect(url_for('requestor_dashboard', requestor_id=requestor_id))
+    
+    current_inventory = blood_inventory.get(blood_group, {}).get('units', 0)
+    
+    if current_inventory < units_requested:
+        flash(f'Not enough {blood_group} blood available! Available: {current_inventory} units', 'warning')
+        return redirect(url_for('requestor_dashboard', requestor_id=requestor_id))
+    
+    # Remove from inventory
+    update_inventory(blood_group, units_requested, 'remove')
+    record_inventory_transaction(blood_group, units_requested, 'withdrawn', 
+                                f'Requestor {requestor_id} withdrew {units_requested} units')
+    
+    # Update request fulfillment if linked
+    if request_id and request_id in blood_requests_db:
+        req_data = blood_requests_db[request_id]
+        req_data['fulfilled_units'] = req_data.get('fulfilled_units', 0) + units_requested
+        
+        remaining = get_request_remaining_units(request_id)
+        if remaining <= 0:
+            req_data['status'] = 'fulfilled'
+    
+    flash(f'Successfully withdrew {units_requested} unit(s) of {blood_group} blood from inventory!', 'success')
+    if request_id and request_id in blood_requests_db:
+        return redirect(url_for('request_details', request_id=request_id))
+    return redirect(url_for('requestor_dashboard', requestor_id=requestor_id))
+
+@app.route('/api/matching-donors/<request_id>')
+def api_get_matching_donors(request_id):
+    """API endpoint to get matching donors for a blood request"""
+    request_data = blood_requests_db.get(request_id)
+    if not request_data:
+        return jsonify({'status': 'error', 'message': 'Request not found'}), 404
+    
+    matching_donors = get_matching_donors_for_request(request_data)
+    
+    donors_list = []
+    for donor in matching_donors:
+        donors_list.append({
+            'donor_id': donor['donor_id'],
+            'name': donor['name'],
+            'blood_group': donor['blood_group'],
+            'city': donor['city'],
+            'state': donor['state'],
+            'total_donations': donor['total_donations'],
+            'can_donate_now': can_donate(donor.get('last_donation'))
+        })
+    
+    return jsonify({
+        'status': 'success',
+        'matching_count': len(donors_list),
+        'donors': donors_list
+    })
+
 # ============== BLOOD REQUEST ROUTES ==============
 
 @app.route('/request-blood', methods=['GET', 'POST'])
@@ -442,7 +739,9 @@ def request_blood():
             'status': 'pending',
             'created_at': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
             'matched_donors': [],
-            'fulfilled_units': 0
+            'fulfilled_units': 0,
+            'accepted_donors': [],
+            'donor_donations': []
         }
         
         blood_requests_db[request_id] = request_data
@@ -472,8 +771,22 @@ def request_details(request_id):
     # Get fresh match results
     match_results = match_blood_request(request_data)
     
+    # Get accepted donors info
+    accepted_donors_list = request_data.get('accepted_donors', [])
+    
+    # Get fulfillment progress
+    remaining_units = get_request_remaining_units(request_id)
+    fulfilled_units = request_data.get('fulfilled_units', 0)
+    
+    # Get matching donors
+    matching_donors = get_matching_donors_for_request(request_data)
+    
     return render_template('request_details.html', request=request_data, 
-                          match_results=match_results)
+                          match_results=match_results,
+                          accepted_donors=accepted_donors_list,
+                          remaining_units=remaining_units,
+                          fulfilled_units=fulfilled_units,
+                          matching_donors=matching_donors)
 
 @app.route('/search-donors', methods=['GET', 'POST'])
 def search_donors():
@@ -762,9 +1075,6 @@ def init_sample_data():
 
 # Initialize sample data
 init_sample_data()
-
-# ============== MAIN ==============
-
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
