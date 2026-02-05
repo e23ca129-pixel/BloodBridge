@@ -40,6 +40,29 @@ body {
     color: rgba(255,255,255,0.9) !important;
 }
 
+/* Dropdown Menu Styles - Black text for menu items */
+.dropdown-menu {
+    background-color: #ffffff;
+    border: 1px solid #dee2e6;
+}
+
+.dropdown-item {
+    color: #000000 !important;
+    font-weight: 500;
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+    background-color: #f8f9fa;
+    color: #000000 !important;
+}
+
+.dropdown-item.active,
+.dropdown-item:active {
+    background-color: #007bff;
+    color: #ffffff !important;
+}
+
 /* Hero Section */
 .hero-section {
     position: relative;
